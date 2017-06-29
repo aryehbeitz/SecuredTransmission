@@ -1,8 +1,6 @@
 import template from './app.html';
 import './app.scss';
 
-let appComponent = {
+export default {
   template
 };
-
-export default appComponent;
