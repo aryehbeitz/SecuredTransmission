@@ -1,6 +1,7 @@
+import uiRouter from '@uirouter/angularjs';
 import aboutComponent from './about.component';
 
-export default angular.module('about', [])
+export default angular.module('about', [uiRouter])
   .config(($stateProvider) => {
     "ngInject";
     $stateProvider
