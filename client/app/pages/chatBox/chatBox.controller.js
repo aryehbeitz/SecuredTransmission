@@ -5,4 +5,7 @@ export default /*@ngInject*/ class ChatBoxController {
     this.name = 'about';
     console.log(this.chatBoxService.name)
   }
+  send(item) {
+    alert(item);
+  }
 }

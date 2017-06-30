@@ -5,5 +5,6 @@ import './chatBox.styles.scss';
 export default {
   bindings: {},
   template,
-  controller
+  controller,
+  controllerAs: '$ctrl'
 };
