@@ -1,4 +1,4 @@
-import template from './home.html';
+import template from './home.template.html';
 import controller from './home.controller';
 import './home.scss';
 

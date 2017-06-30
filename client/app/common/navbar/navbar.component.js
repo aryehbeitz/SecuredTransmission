@@ -1,6 +1,6 @@
-import template from './navbar.html';
+import template from './navbar.template.html';
 import controller from './navbar.controller';
-import './navbar.scss';
+import './navbar.styles.scss';
 
 let navbarComponent = {
   bindings: {},

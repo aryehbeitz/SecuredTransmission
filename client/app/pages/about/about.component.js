@@ -1,6 +1,6 @@
-import template from './about.html';
+import template from './about.template.html';
 import controller from './about.controller';
-import './about.scss';
+import './about.styles.scss';
 
 export default {
   bindings: {},
