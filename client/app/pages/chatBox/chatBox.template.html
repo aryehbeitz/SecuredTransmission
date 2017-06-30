@@ -1,2 +1,7 @@
 chatbox
-<input ng-model="$ctrl.item"><button ng-click="$ctrl.send($ctrl.item)">click me</button>{{$ctrl.item}}
+<input ng-model="$ctrl.item"><button ng-click="$ctrl.sendMessage($ctrl.item)">click me</button>
+<pre>{{$ctrl.socketsService.getLog() | json}}</pre>
+<button ng-click="$ctrl.socketsService.doConnect()">Connect</button>
+<button ng-click="$ctrl.socketsService.disconnect()">Disconnect</button>
+<button ng-click="$ctrl.socketsService.reconnect()">Reconnect</button>
+<button ng-click="console.log($ctrl.socketsService.getLog())">Show Log</button><br>

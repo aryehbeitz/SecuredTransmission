@@ -1,11 +1,22 @@
 export default /*@ngInject*/ class ChatBoxController {
-  constructor($http, chatBoxService) {
-    this.chatBoxService = chatBoxService;
-    this.$http = $http;
-    this.name = 'about';
-    console.log(this.chatBoxService.name)
+  constructor($http, socketsService) {
+    this.socketsService = socketsService;
   }
-  send(item) {
-    alert(item);
+
+  $onInit() {
+    this.socketsService.doConnect();
+  }
+
+  sendMessage(message) {
+    this.socketsService.send(message);
+    this.item = '';
+  }
+
+  reconnect() {
+    this.socketsService.reconnect();
+  }
+
+  disconnect() {
+    this.socketsService.close();
   }
 }
