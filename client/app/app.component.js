@@ -5,6 +5,5 @@ import './app.scss';
 export default {
   template,
   controller,
-  controllerAs: '$ctrl',
-  transclude: true
+  controllerAs: '$ctrl'
 };

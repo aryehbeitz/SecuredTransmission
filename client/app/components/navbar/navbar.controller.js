@@ -1,7 +1,4 @@
-class NavbarController {
+export default /*@ngInject*/ class NavbarController {
   constructor() {
-    this.name = 'navbar';
   }
 }
-
-export default NavbarController;

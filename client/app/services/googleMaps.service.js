@@ -5,6 +5,7 @@ export default /*@ngInject*/ class googleMapsService {
     this.lastPosition = {lat: -25.363, lng: 131.044};
     this.infoWindow = null;
     this.markers = [];
+    this.lineCoords = [];
   }
 
   setMap(map) {
@@ -51,7 +52,7 @@ export default /*@ngInject*/ class googleMapsService {
         this.infoWindow.setContent('Location found.');
         this.infoWindow.open(this.map);
         this.map.setCenter(this.lastPosition);
-      }, function() {
+      }, () => {
         this.handleLocationError(true, this.infoWindow, this.map.getCenter());
       });
     } else {
@@ -66,5 +67,20 @@ export default /*@ngInject*/ class googleMapsService {
                           'Needs permission to show your location' :
                           'No location support found');
     this.infoWindow.open(this.map);
+  }
+
+  mapLineDraw(position) {
+    this.map.setCenter(position);
+    mark.setPosition(position);
+    this.lineCoords.push(new google.maps.LatLng(position.lat, position.lng));
+    const lineCoordinatesPath = new google.maps.Polyline(
+      {
+        path: lineCoords,
+        geodesic: true,
+        strokeColor: '#2E10FF'
+      }
+    );
+
+    lineCoordinatesPath.setMap(this.map);
   }
 }
