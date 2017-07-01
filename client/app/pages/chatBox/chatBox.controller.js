@@ -4,7 +4,9 @@ export default /*@ngInject*/ class ChatBoxController {
   }
 
   $onInit() {
-    this.socketsService.doConnect();
+    if (!this.socketsService.isConnected()) {
+      this.socketsService.doConnect();
+    }
   }
 
   sendMessage(message) {

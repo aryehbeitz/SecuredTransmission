@@ -4,28 +4,29 @@ export default /*@ngInject*/ class socketsService {
     this.host = 'ws://hondor.co.il:9000';
     this.socket = null;
     this.logData = [];
-    this.isConnected = false;
+    this.init();
   }
-  doConnect() {
-    try {
-      this.socket = new WebSocket(this.host);
-      this.$timeout(() => {
-        this.log('WebSocket - status '+this.socket.readyState);
-      });
 
-      this.socket.onopen = this.handleOpen.bind(this);
-      this.socket.onmessage = this.handleReceive.bind(this);
-      this.socket.onclose = this.handleClose.bind(this);
-    }
-    catch(ex){ 
-      this.log(ex); 
+  init() {
+    this.socket = new WebSocket(this.host);
+    this.socket.onopen = this.handleOpen.bind(this);
+    this.socket.onmessage = this.handleReceive.bind(this);
+    this.socket.onclose = this.handleClose.bind(this);
+    this.socket.onerror = this.handleError.bind(this);
+  }
+
+  isConnected() {
+    return this.socket.readyState === 1;
+  }
+
+  doConnect() {
+    if (!this.socket) {
+      this.init();
     }
   }
 
   log(data) {
-    this.$timeout(() => {
-      this.logData.push(data);
-    });
+    this.logData.push(data);
   }
 
   getLog() {
@@ -33,17 +34,20 @@ export default /*@ngInject*/ class socketsService {
   }
 
   send(msg) {
-    try { 
+    if (!this.isConnected()) {
+      this.reconnect();
+      this.$timeout(() => {
+        this.socket.send(msg); 
+        this.log('Sent: '+msg); 
+      },1000);
+    } else {
       this.socket.send(msg); 
       this.log('Sent: '+msg); 
-    } catch(ex) { 
-      this.log(ex); 
     }
   }
 
   close() {
     if (this.socket != null) {
-      this.log("Goodbye!");
       this.socket.close();
       this.socket=null;
     }
@@ -57,6 +61,7 @@ export default /*@ngInject*/ class socketsService {
   handleOpen(msg) {
     this.$timeout(() => {
       this.log("Connection Opened");
+      this.log('WebSocket - status '+this.socket.readyState);
     });
   }
 
@@ -66,9 +71,11 @@ export default /*@ngInject*/ class socketsService {
     });
   }
 
-  handleClose(msg) {
-    this.$timeout(() => {
-      this.log("Close Connection");
-    });
+  handleClose() {
+    this.doConnect();
+  }
+
+  handleError() {
+    this.doConnect();
   }
 }

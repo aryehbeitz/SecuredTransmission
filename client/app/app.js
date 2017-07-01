@@ -5,6 +5,7 @@ import AngularMaterials from 'angular-material';
 import Pages from './pages/pages.module';
 import Components from './components/components.module';
 import Services from './services/services.module';
+import Directives from './directives/directives.module';
 import AppComponent from './app.component';
 import 'normalize.css';
 
@@ -13,7 +14,8 @@ angular.module('app', [
     AngularMaterials,
     Pages,
     Components,
-    Services
+    Services,
+    Directives
   ])
   .config(($locationProvider) => {
     "ngInject";
