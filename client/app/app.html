@@ -4,5 +4,12 @@
     <navbar></navbar>
   </header>
 
-  <ui-view></ui-view>
+  <div ng-show="$ctrl.$state.current.name == 'about'"
+       id="map"
+       google-maps="true"
+       style="height: 400px; width: 100%;">
+  </div>
+
+  <ui-view>
+  </ui-view>
 </div>

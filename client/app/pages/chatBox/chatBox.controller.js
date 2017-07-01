@@ -10,7 +10,11 @@ export default /*@ngInject*/ class ChatBoxController {
   }
 
   sendMessage(message) {
-    this.socketsService.send(message);
+    const message_data = {
+      type: 'text_message',
+      data: message
+    };
+    this.socketsService.send(JSON.stringify(message_data));
     this.item = '';
   }
 

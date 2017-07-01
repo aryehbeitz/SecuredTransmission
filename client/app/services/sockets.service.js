@@ -26,7 +26,7 @@ export default /*@ngInject*/ class socketsService {
   }
 
   log(data) {
-    this.logData.push(data);
+    this.logData.push(data.data);
   }
 
   getLog() {
@@ -38,11 +38,11 @@ export default /*@ngInject*/ class socketsService {
       this.reconnect();
       this.$timeout(() => {
         this.socket.send(msg); 
-        this.log('Sent: '+msg); 
+        this.log({data: 'Sent: '+JSON.parse(msg).data}); 
       },1000);
     } else {
       this.socket.send(msg); 
-      this.log('Sent: '+msg); 
+      this.log({data: 'Sent: '+JSON.parse(msg).data}); 
     }
   }
 
@@ -60,14 +60,14 @@ export default /*@ngInject*/ class socketsService {
 
   handleOpen(msg) {
     this.$timeout(() => {
-      this.log("Connection Opened");
-      this.log('WebSocket - status '+this.socket.readyState);
+      this.log({data: "Connection Opened"});
+      this.log({data: 'WebSocket - status '+this.socket.readyState});
     });
   }
 
   handleReceive(msg) {
     this.$timeout(() => {
-      this.log("Received: " + msg.data);
+      this.log({data: "Received: " + JSON.parse(msg.data).data});
     });
   }
 
