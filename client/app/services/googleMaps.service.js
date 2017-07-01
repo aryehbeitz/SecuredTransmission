@@ -2,6 +2,8 @@ export default /*@ngInject*/ class googleMapsService {
   constructor($timeout) {
     this.$timeout = $timeout;
     this.map = null;
+    this.lastPosition = {lat: -25.363, lng: 131.044};
+    this.infoWindow = null;
     this.markers = [];
   }
 
@@ -19,21 +21,50 @@ export default /*@ngInject*/ class googleMapsService {
 
   createMap(element) {
     this.$timeout(() => {
-      const uluru = {lat: -25.363, lng: 131.044};
       this.map = new google.maps.Map(element, {
        zoom: 4,
-       center: uluru //take last position
+       center: this.lastPosition
       });
-      this.addMarker(uluru, 'some title');
+      // this.trackLocation(); //uncomment to track your location
     }, 1000);
   }
 
   addMarker(position, title) {
     let marker = new google.maps.Marker({
-       position: position,
+       position: this.lastPosition,
        map: this.map,
        title: title
     });
     this.markers.push(marker);
+  }
+
+  trackLocation() {
+    this.infoWindow = new google.maps.InfoWindow;
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        this.lastPosition = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude
+        };
+
+        this.infoWindow.setPosition(this.lastPosition);
+        this.infoWindow.setContent('Location found.');
+        this.infoWindow.open(this.map);
+        this.map.setCenter(this.lastPosition);
+      }, function() {
+        this.handleLocationError(true, this.infoWindow, this.map.getCenter());
+      });
+    } else {
+      // Browser doesn't support Geolocation
+      this.handleLocationError(false, this.infoWindow, map.getCenter());
+    }
+  }
+
+  handleLocationError(browserHasGeolocation, infoWindow, pos) {
+    this.infoWindow.setPosition(pos);
+    this.infoWindow.setContent(browserHasGeolocation ?
+                          'Needs permission to show your location' :
+                          'No location support found');
+    this.infoWindow.open(this.map);
   }
 }
