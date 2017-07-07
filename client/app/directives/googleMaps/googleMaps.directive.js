@@ -11,7 +11,7 @@ export default /*@ngInject*/ function googleMapsDirective($timeout, googleMapsSe
         $scope.$watch($scope.googleMaps, (newValue) => {
             if (newValue) {
               if (!googleMapsService.isMap()) {
-                googleMapsService.createMap($element[0]);
+                googleMapsService.trackLocation($element[0]);
               }
             }
         });
