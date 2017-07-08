@@ -2,6 +2,11 @@ import angular from 'angular';
 import uiRouter from '@uirouter/angularjs';
 import AngularMaterials from 'angular-material';
 
+// import 'bootstrap/dist/css/bootstrap.css';
+import 'font-awesome/css/font-awesome.css';
+
+import uiBootstrap from 'angular-ui-bootstrap';
+
 import Pages from './pages/pages.module';
 import Components from './components/components.module';
 import Services from './services/services.module';
