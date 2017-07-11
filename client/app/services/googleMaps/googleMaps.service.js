@@ -1,7 +1,6 @@
 export default /*@ngInject*/ class googleMapsService {
-  constructor($timeout, $interval, $q) {
+  constructor($timeout, $q) {
     this.$timeout = $timeout;
-    this.$interval = $interval;
     this.$q = $q;
     this.map = null;
     this.lastPosition = {lat: -25.363, lng: 131.044};
@@ -24,10 +23,8 @@ export default /*@ngInject*/ class googleMapsService {
   }
 
   createMap(element) {
-    if (this.isMap()) {
-     return;
-    };
-    this.$timeout(() => {
+    if (this.isMap()) return this.$q.defer();
+    return this.$timeout(() => {
       this.map = new google.maps.Map(element, {
         zoom: 16,
         center: this.lastPosition,
@@ -46,34 +43,31 @@ export default /*@ngInject*/ class googleMapsService {
   }
 
   trackLocation(element) {
-    let tmpPos = {};
-    this.$interval(() => {
-      this.infoWindow = new google.maps.InfoWindow;
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition((position) => {
-          tmpPos = {lat: (tmpPos.lat || position.coords.latitude) - Math.random()/1000, lng: (tmpPos.lon || position.coords.longitude) + Math.random()/1000};
-          tmpPos = {lat: position.coords.latitude, lng: position.coords.longitude};
-          // tmpPos.lat += 0.001;
-          if (this.lastPosition.lat === position.lat && this.lastPosition.latlng === position.lng) return false;
-        // navigator.geolocation.watchPosition((position) => {
-          this.lastPosition = {
-            lat: tmpPos.lat,
-            lng: tmpPos.lng
-          };
-          this.path.push(this.lastPosition);
 
-          this.createMap(element);
+    this.infoWindow = new google.maps.InfoWindow;
+    if (navigator.geolocation) {
+      // navigator.geolocation.getCurrentPosition((position) => {
+      navigator.geolocation.watchPosition((position) => {
+        this.lastPosition = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude
+        };
+        this.path.push(this.lastPosition);
+
+        this.createMap(element)
+        .then(() => {
+          debugger;
           // Create the array that will be used to fit the view to the points range and
           // place the markers to the polyline's points
           var latLngBounds = new google.maps.LatLngBounds();
           for (var i = 0; i < this.path.length; i++) {
               latLngBounds.extend(this.path[i]);
               // Place the marker
-              // new google.maps.Marker({
-              //     map: this.map,
-              //     position: this.path[i],
-              //     title: "Point " + (i + 1)
-              // });
+              new google.maps.Marker({
+                  map: this.map,
+                  position: this.path[i],
+                  title: "Point " + (i + 1)
+              });
           }
           // Creates the polyline object
           var polyline = new google.maps.Polyline({
@@ -84,33 +78,26 @@ export default /*@ngInject*/ class googleMapsService {
               strokeWeight: 1
           });
           // Fit the bounds of the generated points
-          // this.map.fitBounds(latLngBounds);
+          this.map.fitBounds(latLngBounds);
 
 
 
-          // this.infoWindow.setPosition(this.lastPosition);
-          // this.infoWindow.setContent('Location found.');
+          this.infoWindow.setPosition(this.lastPosition);
+          this.infoWindow.setContent('Location found.');
           this.infoWindow.open(this.map);
-          // console.log( )
-          this.lastPosition.lat = this.map.getCenter().lat();
-          this.lastPosition.lng = this.map.getCenter().lng();
-          // debugger;
-
-          // this.map.setCenter(this.lastPosition);
+          this.map.setCenter(this.lastPosition);
           console.log(this.lastPosition);
-          console.log(...this.path);
-        }, () => {
-          this.handleLocationError(true, this.infoWindow, this.map.getCenter());
-        }, {
-          enableHighAccuracy: true,
-          timeout: 10 * 1000 // 10 seconds
         });
-      } else {
-        // Browser doesn't support Geolocation
-        this.handleLocationError(false, this.infoWindow, map.getCenter());
-      }
-    }, 1000);
-
+      }, () => {
+        this.handleLocationError(true, this.infoWindow, this.map.getCenter());
+      }, {
+        enableHighAccuracy: true,
+        timeout: 10 * 1000 // 10 seconds
+      });
+    } else {
+      // Browser doesn't support Geolocation
+      this.handleLocationError(false, this.infoWindow, map.getCenter());
+    }
   }
 
   handleLocationError(browserHasGeolocation, infoWindow, pos) {
